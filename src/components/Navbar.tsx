@@ -26,7 +26,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
                   {/* Logo placeholder */}
                   <div className="flex-shrink-0">
-                    <div className="relative w-36 h-16  rounded-md flex items-center justify-center overflow-hidden">
+                    <div className="relative w-48 h-28  rounded-md flex items-center justify-center overflow-hidden">
                       <Image
                         src="/logo.png"
                         alt="Logo"
