@@ -1,6 +1,7 @@
 "use client"
 import { ArrowRight, BookOpen, Award, Users, Globe, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const HomePage = () => {
   const highlights = [
@@ -139,13 +140,7 @@ const HomePage = () => {
                   About Me
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </a>
-                <a
-                  href="/research"
-                  className="inline-flex items-center px-8 py-3 border-2 border-[#006293] text-[#006293] font-medium rounded-lg hover:bg-[#89d6fb] hover:border-[#89d6fb] transition-all duration-200"
-                >
-                  View Research
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </a>
+                
               </motion.div>
             </motion.div>
             <motion.div 
@@ -155,9 +150,8 @@ const HomePage = () => {
               variants={scaleIn}
               transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
             >
-              <div className="w-80 h-80 bg-gray-200 rounded-full flex items-center justify-center">
-                <span className="text-gray-500 font-medium">Profile Photo</span>
-              </div>
+               <Image src="/masood_ahmed.PNG" alt="Profile Photo" layout='responsive' width={320} height={320} 
+               className="w-80 h-80 bg-gray-200 rounded-full flex items-center justify-center"/>
             </motion.div>
           </div>
         </div>
@@ -203,131 +197,9 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Key Highlights */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <motion.h2 
-            className="text-3xl font-bold text-[#006293] text-center mb-12"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeInUp}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            Key Highlights
-          </motion.h2>
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-          >
-            {highlights.map((highlight, index) => (
-              <motion.div 
-                key={index} 
-                className="text-center p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-shadow duration-200"
-                variants={fadeInUp}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                whileHover={{ 
-                  scale: 1.05,
-                  transition: { duration: 0.2 }
-                }}
-              >
-                <motion.div 
-                  className="inline-flex items-center justify-center w-16 h-16 bg-[#89d6fb] text-[#006293] rounded-full mb-4"
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
-                >
-                  {highlight.icon}
-                </motion.div>
-                <h3 className="text-xl font-semibold text-[#006293] mb-2">{highlight.title}</h3>
-                <motion.p 
-                  className="text-3xl font-bold text-[#89d6fb] mb-2"
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 + 0.3, type: "spring", stiffness: 100 }}
-                >
-                  {highlight.stat}
-                </motion.p>
-                <p className="text-gray-600 text-sm">{highlight.description}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+      
 
-      {/* Featured Research */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <motion.div 
-            className="text-center mb-12"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-          >
-            <motion.h2 
-              className="text-3xl font-bold text-[#006293] mb-4"
-              variants={fadeInUp}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-              Featured Research
-            </motion.h2>
-            <motion.p 
-              className="text-lg text-gray-600"
-              variants={fadeInUp}
-              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-            >
-              Explore my latest research projects and findings
-            </motion.p>
-          </motion.div>
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-          >
-            {featuredResearch.map((project, index) => (
-              <motion.div 
-                key={index} 
-                className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200"
-                variants={fadeInUp}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                whileHover={{ 
-                  y: -8,
-                  transition: { duration: 0.3, ease: "easeOut" }
-                }}
-              >
-                <motion.div 
-                  className="mb-4"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.1 + 0.3 }}
-                >
-                  <span className="inline-block px-3 py-1 bg-[#89d6fb] text-[#006293] text-xs font-medium rounded-full">
-                    {project.category}
-                  </span>
-                </motion.div>
-                <h3 className="text-xl font-semibold text-[#006293] mb-3">{project.title}</h3>
-                <p className="text-gray-600 mb-4 leading-relaxed">{project.description}</p>
-                <motion.a
-                  href="/research"
-                  className="inline-flex items-center text-[#006293] hover:text-[#89d6fb] font-medium transition-colors duration-200"
-                  whileHover={{ x: 5 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  Read More
-                  <ArrowRight className="ml-1 w-4 h-4" />
-                </motion.a>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+     
 
       {/* Latest Blog Posts */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">

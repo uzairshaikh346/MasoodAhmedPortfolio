@@ -1,6 +1,7 @@
 "use client"
 import { motion } from 'framer-motion';
 import { Calendar, MapPin, GraduationCap, Briefcase, Mail, Linkedin, Twitter, CheckCircle, Award } from 'lucide-react';
+import Image from 'next/image';
 
 const AboutPage = () => {
   // Animation variants for scroll effects
@@ -129,28 +130,15 @@ const AboutPage = () => {
               className="flex justify-center lg:justify-end"
               variants={fadeInRight}
             >
-              <div className="relative">
-                <motion.div 
-                  className="w-72 h-72 bg-gray-200 rounded-full flex items-center justify-center border-4 border-[#89d6fb]"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <span className="text-gray-500 font-medium">Professional Photo</span>
-                </motion.div>
-                <motion.div 
-                  className="absolute -bottom-4 -right-4 w-16 h-16 bg-[#006293] rounded-full flex items-center justify-center"
-                  animate={{ 
-                    scale: [1, 1.1, 1],
-                    rotate: [0, 10, -10, 0]
-                  }}
-                  transition={{ 
-                    duration: 2, 
-                    repeat: Infinity,
-                    repeatType: "reverse"
-                  }}
-                >
-                  <Award className="w-8 h-8 text-white" />
-                </motion.div>
+              <div className="relative w-64 h-64 bg-gray-200 rounded-full flex items-center justify-center border-4 border-[#89d6fb] overflow-hidden">
+                <Image
+                  src="/masood_ahmed2.PNG"
+                  alt="Profile Photo"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+                
               </div>
             </motion.div>
           </motion.div>
@@ -375,84 +363,7 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Social Links Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.h2 
-            className="text-3xl font-bold text-[#006293] mb-8"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            Let&apos;s Connect
-          </motion.h2>
-          <motion.p 
-            className="text-lg text-gray-600 mb-12"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            I&apos;m always interested in discussing development economics, policy research, and potential collaborations.
-          </motion.p>
-          
-          <motion.div 
-            className="flex justify-center space-x-8"
-            initial="initial"
-            whileInView="animate"
-            variants={staggerContainer}
-            viewport={{ once: true }}
-          >
-            <motion.a
-              href="mailto:masood.ahmed@email.com"
-              className="group inline-flex flex-col items-center p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-              aria-label="Email"
-              variants={fadeInUp}
-              transition={{ delay: 0.1 }}
-              whileHover={{ scale: 1.1, y: -10 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div className="w-16 h-16 bg-[#006293] text-white rounded-full flex items-center justify-center mb-3 group-hover:bg-[#89d6fb] group-hover:text-[#006293] transition-colors duration-300">
-                <Mail className="w-7 h-7" />
-              </div>
-              <span className="text-[#006293] font-medium">Email</span>
-            </motion.a>
-            <motion.a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex flex-col items-center p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-              aria-label="LinkedIn"
-              variants={fadeInUp}
-              transition={{ delay: 0.2 }}
-              whileHover={{ scale: 1.1, y: -10 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div className="w-16 h-16 bg-[#006293] text-white rounded-full flex items-center justify-center mb-3 group-hover:bg-[#89d6fb] group-hover:text-[#006293] transition-colors duration-300">
-                <Linkedin className="w-7 h-7" />
-              </div>
-              <span className="text-[#006293] font-medium">LinkedIn</span>
-            </motion.a>
-            <motion.a
-              href="https://twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex flex-col items-center p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-              aria-label="Twitter"
-              variants={fadeInUp}
-              transition={{ delay: 0.3 }}
-              whileHover={{ scale: 1.1, y: -10 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div className="w-16 h-16 bg-[#006293] text-white rounded-full flex items-center justify-center mb-3 group-hover:bg-[#89d6fb] group-hover:text-[#006293] transition-colors duration-300">
-                <Twitter className="w-7 h-7" />
-              </div>
-              <span className="text-[#006293] font-medium">Twitter</span>
-            </motion.a>
-          </motion.div>
-        </div>
-      </section>
+  
     </div>
   );
 };
