@@ -1,6 +1,26 @@
 "use client"
 import { Calendar, Clock, ArrowRight, User} from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { client } from '../../sanity/lib/client';
+
+
+
+// Sanity query
+const blogQuery = `*[_type == "blog"]{
+  title,
+  "slug": slug.current,
+  author,
+  publishedAt,
+  excerpt,
+  category,
+  readTime,
+  mainImage{
+    asset->{
+      url
+    }
+  }
+} | order(publishedAt desc)`;
 
 // BlogHero Component
 const BlogHero = () => {
@@ -49,19 +69,33 @@ const BlogHero = () => {
 // BlogCard Component
 type BlogCardProps = {
   title: string;
-  date: string;
+  publishedAt: string;
   excerpt: string;
-  link: string;
-  category: string;
-  readTime: string;
+  slug: string;
+  category?: string;
+  readTime?: string;
   author: string;
-  image: string | null;
+  mainImage?: {
+    asset: {
+      url: string;
+    };
+  };
 };
 
-const BlogCard = ({ title, date, excerpt, link, category, readTime, author}: BlogCardProps) => {
+const BlogCard = ({ title, publishedAt, excerpt, slug, category, readTime, author, mainImage }: BlogCardProps) => {
   const cardVariants = {
     hidden: { opacity: 0, y: 40 },
     visible: { opacity: 1, y: 0 }
+  };
+
+  // Format date
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    };
+    return new Date(dateString).toLocaleDateString('en-US', options);
   };
 
   return (
@@ -74,27 +108,39 @@ const BlogCard = ({ title, date, excerpt, link, category, readTime, author}: Blo
         transition: { duration: 0.3, ease: "easeOut" }
       }}
     >
-      {/* Image placeholder */}
-      <div className="w-full h-48 bg-gradient-to-br from-[#89d6fb] to-[#006293] flex items-center justify-center">
-        <span className="text-white font-medium">Blog Image</span>
+      {/* Dynamic Image or placeholder */}
+      <div className="w-full h-48 bg-gradient-to-br from-[#89d6fb] to-[#006293] flex items-center justify-center overflow-hidden">
+        {mainImage?.asset?.url ? (
+          <img 
+            src={mainImage.asset.url} 
+            alt={title}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <span className="text-white font-medium">Blog Image</span>
+        )}
       </div>
       
       <div className="p-6">
         {/* Category and metadata */}
         <div className="flex flex-wrap items-center gap-3 mb-3">
-          <motion.span 
-            className="px-3 py-1 bg-[#89d6fb] text-[#006293] text-xs font-medium rounded-full"
-            initial={{ scale: 0 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.2, type: "spring", stiffness: 100 }}
-          >
-            {category}
-          </motion.span>
-          <div className="flex items-center text-xs text-gray-500">
-            <Clock className="w-3 h-3 mr-1" />
-            {readTime}
-          </div>
+          {category && (
+            <motion.span 
+              className="px-3 py-1 bg-[#89d6fb] text-[#006293] text-xs font-medium rounded-full"
+              initial={{ scale: 0 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.2, type: "spring", stiffness: 100 }}
+            >
+              {category}
+            </motion.span>
+          )}
+          {readTime && (
+            <div className="flex items-center text-xs text-gray-500">
+              <Clock className="w-3 h-3 mr-1" />
+              {readTime}
+            </div>
+          )}
         </div>
 
         {/* Title */}
@@ -110,16 +156,18 @@ const BlogCard = ({ title, date, excerpt, link, category, readTime, author}: Blo
           </span>
           <span className="flex items-center">
             <Calendar className="w-4 h-4 mr-1" />
-            {date}
+            {formatDate(publishedAt)}
           </span>
         </div>
 
         {/* Excerpt */}
-        <p className="text-gray-600 leading-relaxed mb-6">{excerpt}</p>
+        {excerpt && (
+          <p className="text-gray-600 leading-relaxed mb-6">{excerpt}</p>
+        )}
 
         {/* Read more link */}
         <motion.a
-          href={link}
+          href={`/blog/${slug}`}
           className="inline-flex items-center text-[#006293] hover:text-[#89d6fb] font-medium transition-colors duration-200"
           whileHover={{ x: 5 }}
           transition={{ duration: 0.2 }}
@@ -133,18 +181,22 @@ const BlogCard = ({ title, date, excerpt, link, category, readTime, author}: Blo
 };
 
 // BlogList Component
-type BlogPost = {
+type SanityBlogPost = {
   title: string;
-  date: string;
-  excerpt: string;
-  link: string;
-  category: string;
-  readTime: string;
+  slug: string;
   author: string;
-  image: string | null;
+  publishedAt: string;
+  excerpt?: string;
+  category?: string;
+  readTime?: string;
+  mainImage?: {
+    asset: {
+      url: string;
+    };
+  };
 };
 
-const BlogList = ({ posts }: { posts: BlogPost[] }) => {
+const BlogList = ({ posts }: { posts: SanityBlogPost[] }) => {
   const staggerContainer = {
     hidden: { opacity: 0 },
     visible: {
@@ -163,129 +215,80 @@ const BlogList = ({ posts }: { posts: BlogPost[] }) => {
       viewport={{ once: true, margin: "-100px" }}
       variants={staggerContainer}
     >
-      {posts.map((post, index) => (
+      {posts.map((post) => (
         <BlogCard
-          key={index}
+          key={post.slug}
           title={post.title}
-          date={post.date}
-          excerpt={post.excerpt}
-          link={post.link}
+          publishedAt={post.publishedAt}
+          excerpt={post.excerpt || ''}
+          slug={post.slug}
           category={post.category}
           readTime={post.readTime}
           author={post.author}
-          image={post.image}
+          mainImage={post.mainImage}
         />
       ))}
     </motion.div>
   );
 };
 
+// Loading Component
+const LoadingSpinner = () => (
+  <div className="flex justify-center items-center py-16">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#006293]"></div>
+  </div>
+);
+
+// Error Component
+const ErrorMessage = ({ message }: { message: string }) => (
+  <div className="text-center py-16">
+    <p className="text-red-600 text-lg">{message}</p>
+    <p className="text-gray-500 mt-2">Please try again later.</p>
+  </div>
+);
+
 // Main BlogPage Component
 const BlogPage = () => {
-  const blogPosts = [
-    {
-      title: "The Future of Development Economics in a Post-Pandemic World",
-      date: "March 15, 2025",
-      excerpt: "Exploring how COVID-19 has reshaped development priorities and what it means for policy makers going forward. An in-depth analysis of emerging trends and adaptive strategies.",
-      category: "Development Economics",
-      readTime: "8 min read",
-      author: "Masood Ahmed",
-      link: "/blog/future-development-economics",
-      image: null
-    },
-    {
-      title: "Bridging the Digital Divide: Lessons from Pakistan's Fintech Revolution",
-      date: "February 28, 2025",
-      excerpt: "An in-depth look at how Pakistan's digital payment ecosystem has evolved and its implications for financial inclusion across South Asian markets.",
-      category: "Financial Technology",
-      readTime: "12 min read",
-      author: "Masood Ahmed",
-      link: "/blog/digital-divide-pakistan",
-      image: null
-    },
-    {
-      title: "Sustainable Development Goals: Mid-Point Assessment",
-      date: "February 12, 2025",
-      excerpt: "Evaluating progress on the SDGs and identifying key challenges and opportunities for the remaining decade. A comprehensive review of global initiatives.",
-      category: "Policy Analysis",
-      readTime: "15 min read",
-      author: "Masood Ahmed",
-      link: "/blog/sdg-midpoint-assessment",
-      image: null
-    },
-    {
-      title: "Microfinance and Women's Empowerment: New Evidence from Rural Asia",
-      date: "January 25, 2025",
-      excerpt: "Recent research findings on how microfinance programs are creating pathways for women's economic empowerment in rural communities across Asia.",
-      category: "Gender Economics",
-      readTime: "10 min read",
-      author: "Masood Ahmed",
-      link: "/blog/microfinance-women-empowerment",
-      image: null
-    },
-    {
-      title: "Climate Finance Mechanisms for Smallholder Farmers",
-      date: "January 10, 2025",
-      excerpt: "Analyzing innovative financing solutions that help smallholder farmers adapt to climate change while maintaining agricultural productivity and income stability.",
-      category: "Environmental Economics",
-      readTime: "11 min read",
-      author: "Masood Ahmed",
-      link: "/blog/climate-finance-farmers",
-      image: null
-    },
-    {
-      title: "Digital Identity Systems and Financial Inclusion in Emerging Markets",
-      date: "December 28, 2024",
-      excerpt: "How digital identity frameworks are becoming the backbone of financial inclusion initiatives, with case studies from successful implementations across developing nations.",
-      category: "Digital Innovation",
-      readTime: "9 min read",
-      author: "Masood Ahmed",
-      link: "/blog/digital-identity-financial-inclusion",
-      image: null
-    },
-    {
-      title: "The Economics of Refugee Integration: Policy Lessons from Jordan",
-      date: "December 15, 2024",
-      excerpt: "Examining Jordan's approach to refugee economic integration and the policy frameworks that have enabled successful outcomes for both refugees and host communities.",
-      category: "Migration Economics",
-      readTime: "13 min read",
-      author: "Masood Ahmed",
-      link: "/blog/refugee-integration-jordan",
-      image: null
-    },
-    {
-      title: "Blockchain Applications in Development Finance: Promise and Reality",
-      date: "December 2, 2024",
-      excerpt: "A critical assessment of blockchain technology's potential in development finance, separating hype from practical applications that can drive real impact.",
-      category: "Financial Technology",
-      readTime: "14 min read",
-      author: "Masood Ahmed",
-      link: "/blog/blockchain-development-finance",
-      image: null
-    },
-    {
-      title: "Measuring Impact: New Methodologies in Development Economics",
-      date: "November 18, 2024",
-      excerpt: "Exploring innovative research methodologies and impact measurement frameworks that are reshaping how we evaluate development interventions and their effectiveness.",
-      category: "Research Methods",
-      readTime: "16 min read",
-      author: "Masood Ahmed",
-      link: "/blog/measuring-impact-methodologies",
-      image: null
-    }
-  ];
+  const [blogs, setBlogs] = useState<SanityBlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [displayCount, setDisplayCount] = useState(9); // Show 9 blogs initially
+
+  // Fetch blogs from Sanity
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        setLoading(true);
+        const data = await client.fetch(blogQuery);
+        setBlogs(data);
+        setError(null);
+      } catch (err) {
+        setError('Failed to fetch blog posts');
+        console.error('Error fetching blogs:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
+  const loadMore = () => {
+    setDisplayCount(prev => prev + 6); // Load 6 more blogs
+  };
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 40 },
     visible: { opacity: 1, y: 0 }
   };
 
+  const displayedBlogs = blogs.slice(0, displayCount);
+  const hasMore = displayCount < blogs.length;
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <BlogHero />
-
-    
 
       {/* Blog Grid */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
@@ -301,30 +304,49 @@ const BlogPage = () => {
             Latest Articles
           </motion.h2>
           
-          <BlogList posts={blogPosts.slice(1)} />
-
-          {/* Load More */}
-          <motion.div 
-            className="text-center mt-16"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeInUp}
-            transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-          >
-            <motion.button
-              className="inline-flex items-center px-8 py-3 bg-[#006293] text-white font-medium rounded-lg hover:bg-[#89d6fb] hover:text-[#006293] transition-all duration-200"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Load More Articles
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </motion.button>
-          </motion.div>
+          {/* Loading State */}
+          {loading && <LoadingSpinner />}
+          
+          {/* Error State */}
+          {error && <ErrorMessage message={error} />}
+          
+          {/* Blog Posts */}
+          {!loading && !error && blogs.length > 0 && (
+            <>
+              <BlogList posts={displayedBlogs} />
+              
+              {/* Load More Button */}
+              {hasMore && (
+                <motion.div 
+                  className="text-center mt-16"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  variants={fadeInUp}
+                  transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+                >
+                  <motion.button
+                    onClick={loadMore}
+                    className="inline-flex items-center px-8 py-3 bg-[#006293] text-white font-medium rounded-lg hover:bg-[#89d6fb] hover:text-[#006293] transition-all duration-200"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Load More Articles
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </motion.button>
+                </motion.div>
+              )}
+            </>
+          )}
+          
+          {/* No blogs found */}
+          {!loading && !error && blogs.length === 0 && (
+            <div className="text-center py-16">
+              <p className="text-gray-500 text-lg">No blog posts found.</p>
+            </div>
+          )}
         </div>
       </section>
-
-     
     </div>
   );
 };

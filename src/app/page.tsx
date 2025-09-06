@@ -1,71 +1,54 @@
 "use client"
-import { ArrowRight, BookOpen, Award, Users, Globe, Calendar } from 'lucide-react';
+import { ArrowRight, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { client } from '../sanity/lib/client';
 
 const HomePage = () => {
-  const highlights = [
-    {
-      icon: <BookOpen className="w-8 h-8" />,
-      title: "Publications",
-      description: "50+ peer-reviewed articles in top economic journals",
-      stat: "50+"
-    },
-    {
-      icon: <Users className="w-8 h-8" />,
-      title: "Leadership Roles",
-      description: "Senior positions in international development organizations",
-      stat: "15+"
-    },
-    {
-      icon: <Globe className="w-8 h-8" />,
-      title: "Global Policy Advisor",
-      description: "Consulting for governments and NGOs across 20+ countries",
-      stat: "20+"
-    },
-    {
-      icon: <Award className="w-8 h-8" />,
-      title: "Awards",
-      description: "Recognition for outstanding contributions to economic research",
-      stat: "8+"
+  interface Blog {
+    title: string;
+    slug: string;
+    author: string;
+    publishedAt: string;
+    excerpt: string;
+    category?: string;
+    readTime?: string;
+    mainImage?: {
+      asset?: {
+        url: string;
+      };
+    };
+  }
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const blogPosts = blogs;
+  const blogQuery = `*[_type == "blog"]{
+  title,
+  "slug": slug.current,
+  author,
+  publishedAt,
+  excerpt,
+  category,
+  readTime,
+  mainImage{
+    asset->{
+      url
     }
-  ];
+  }
+} | order(publishedAt desc)`;
+  // Fetch blogs from Sanity
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const data = await client.fetch(blogQuery);
+        setBlogs(data);
+      } catch (err) {
+        console.error('Error fetching blogs:', err);
+      }
+    };
 
-  const featuredResearch = [
-    {
-      title: "Impact of Microfinance on Rural Development",
-      description: "Comprehensive analysis of microfinance institutions' role in poverty alleviation across South Asian economies.",
-      category: "Development Economics"
-    },
-    {
-      title: "Digital Financial Inclusion in Emerging Markets",
-      description: "Examining how digital payment systems are transforming financial access in developing countries.",
-      category: "Financial Policy"
-    },
-    {
-      title: "Climate Change and Agricultural Productivity",
-      description: "Assessment of climate resilience strategies and their economic impact on smallholder farmers.",
-      category: "Environmental Economics"
-    }
-  ];
-
-  const blogPosts = [
-    {
-      title: "The Future of Development Economics in a Post-Pandemic World",
-      date: "March 15, 2025",
-      excerpt: "Exploring how COVID-19 has reshaped development priorities and what it means for policy makers going forward."
-    },
-    {
-      title: "Bridging the Digital Divide: Lessons from Pakistan's Fintech Revolution",
-      date: "February 28, 2025",
-      excerpt: "An in-depth look at how Pakistan's digital payment ecosystem has evolved and its implications for financial inclusion."
-    },
-    {
-      title: "Sustainable Development Goals: Mid-Point Assessment",
-      date: "February 12, 2025",
-      excerpt: "Evaluating progress on the SDGs and identifying key challenges and opportunities for the remaining decade."
-    }
-  ];
+    fetchBlogs();
+  }, [blogQuery]);
 
   // Animation variants
   const fadeInUp = {
@@ -77,8 +60,6 @@ const HomePage = () => {
     hidden: { opacity: 0, x: -60 },
     visible: { opacity: 1, x: 0 }
   };
-
-
 
   const staggerContainer = {
     hidden: { opacity: 0 },
@@ -126,7 +107,8 @@ const HomePage = () => {
                 variants={fadeInLeft}
                 transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
               >
-                Bridging theory and practice to create sustainable economic solutions for developing nations through evidence-based research and policy innovation.
+                Bridging theory and practice to create sustainable economic solutions 
+                for developing nations through evidence-based research and policy innovation.
               </motion.p>
               <motion.div 
                 className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
@@ -140,7 +122,6 @@ const HomePage = () => {
                   About Me
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </a>
-                
               </motion.div>
             </motion.div>
             <motion.div 
@@ -150,8 +131,14 @@ const HomePage = () => {
               variants={scaleIn}
               transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
             >
-               <Image src="/masood_ahmed.PNG" alt="Profile Photo" layout='responsive' width={320} height={320} 
-               className="w-80 h-80 bg-gray-200 rounded-full flex items-center justify-center"/>
+              <Image 
+                src="/masood_ahmed.PNG" 
+                alt="Profile Photo" 
+                layout="responsive" 
+                width={320} 
+                height={320} 
+                className="w-80 h-80 bg-gray-200 rounded-full object-cover"
+              />
             </motion.div>
           </div>
         </div>
@@ -178,7 +165,11 @@ const HomePage = () => {
             variants={fadeInUp}
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
           >
-            With over 15 years of experience in development economics and policy research, I have dedicated my career to understanding and addressing the complex challenges facing developing economies. My work spans across microfinance, digital financial inclusion, agricultural economics, and sustainable development, with a particular focus on South Asian markets and emerging economies.
+            With over 15 years of experience in development economics and policy research, 
+            I have dedicated my career to understanding and addressing the complex challenges 
+            facing developing economies. My work spans across microfinance, digital financial inclusion, 
+            agricultural economics, and sustainable development, with a particular focus on South Asian 
+            markets and emerging economies.
           </motion.p>
           <motion.a
             href="/about"
@@ -196,10 +187,6 @@ const HomePage = () => {
           </motion.a>
         </div>
       </section>
-
-      
-
-     
 
       {/* Latest Blog Posts */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
@@ -233,7 +220,7 @@ const HomePage = () => {
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainer}
           >
-            {blogPosts.map((post, index) => (
+            {blogPosts.map((post: Blog, index: number) => (
               <motion.article 
                 key={index} 
                 className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-200"
@@ -245,6 +232,17 @@ const HomePage = () => {
                   transition: { duration: 0.3, ease: "easeOut" }
                 }}
               >
+                {post.mainImage?.asset?.url && (
+                  <div className="mb-4 rounded-lg overflow-hidden">
+                    <Image
+                      src={post.mainImage.asset.url}
+                      alt={post.title}
+                      width={400}
+                      height={220}
+                      className="w-full h-44 object-cover"
+                    />
+                  </div>
+                )}
                 <motion.div 
                   className="flex items-center text-sm text-gray-500 mb-3"
                   initial={{ opacity: 0 }}
@@ -253,7 +251,7 @@ const HomePage = () => {
                   transition={{ duration: 0.4, delay: index * 0.1 + 0.4 }}
                 >
                   <Calendar className="w-4 h-4 mr-2" />
-                  {post.date}
+                  {post.publishedAt}
                 </motion.div>
                 <h3 className="text-xl font-semibold text-[#006293] mb-3 leading-tight">{post.title}</h3>
                 <p className="text-gray-600 mb-4 leading-relaxed">{post.excerpt}</p>

@@ -1,6 +1,6 @@
 "use client"
 import { motion } from 'framer-motion';
-import { Calendar, MapPin, GraduationCap, Briefcase, Mail, Linkedin, Twitter, CheckCircle, Award } from 'lucide-react';
+import { Calendar, MapPin, GraduationCap, Briefcase, CheckCircle, } from 'lucide-react';
 import Image from 'next/image';
 
 const AboutPage = () => {
@@ -31,55 +31,52 @@ const AboutPage = () => {
     }
   };
 
-  const skills = [
-    "Development Finance",
-    "Global Policy Leadership",
-    "International Aid & Governance",
-    "Poverty Reduction Strategies",
-    "Debt Relief & Restructuring",
-    "Policy Research & Analysis",
-    "Multilateral Negotiations",
-    "Stakeholder Engagement",
-    "Public Speaking & Thought Leadership"
-  ];
+ const skills = [
+  "Sustainability",
+  "Corporate Social Responsibility (CSR)",
+  "Training & Development",
+  "Higher Education",
+  "Teaching",
+  "Program Management",
+  "Research",
+  "Public Speaking",
+  "Leadership Development",
+  "Change Management"
+];
 
-  const experience = [
-    {
-      title: "President",
-      company: "Center for Global Development",
-      duration: "2017 – Present",
-      location: "Washington, DC",
-      description: "Leading research and policy initiatives on international development and global finance."
-    },
-    {
-      title: "Director, Middle East & Central Asia Department",
-      company: "International Monetary Fund",
-      duration: "2008 – 2016",
-      location: "Washington, DC",
-      description: "Oversaw economic policy and financial programs across Middle East and Central Asia."
-    },
-    {
-      title: "Vice President, Poverty Reduction & Economic Management",
-      company: "World Bank",
-      duration: "2003 – 2006",
-      location: "Washington, DC",
-      description: "Managed global programs focused on poverty alleviation and development finance."
-    },
-    {
-      title: "Director General, Policy & International Division",
-      company: "UK DFID",
-      duration: "2000 – 2002",
-      location: "London, UK",
-      description: "Directed policy and strategic planning for international development projects."
-    }
-  ];
+
+const experience = [
+  {
+    title: "Assistant Professor & MBA Program Manager",
+    company: "SZABIST, Karachi",
+    duration: "Aug 2016 – Present",
+    location: "Karachi, Pakistan",
+    description: "Managing the MBA program and teaching graduate-level courses. Mentoring students, coordinating with faculty, and driving academic excellence."
+  },
+  {
+    title: "Corporate Sustainability Trainer & Consultant",
+    company: "Freelance / Independent",
+    duration: "Ongoing",
+    location: "Pakistan",
+    description: "Designing and delivering training programs for organizations on sustainability, CSR, and alignment with UN Sustainable Development Goals (SDGs)."
+  },
+  {
+    title: "Visiting Faculty",
+    company: "Various Universities & Institutes",
+    duration: "Past Roles",
+    location: "Pakistan",
+    description: "Delivered lectures and workshops on management, leadership, and corporate responsibility across different academic institutions."
+  }
+];
+
 
   const education = [
     {
-      degree: "B.A. & M.A. in Economics",
-      institution: "University of Cambridge",
-      year: "1980s",
-      details: "Focus on development economics and international finance."
+    degree: "MBA / Management Studies",
+    institution: "SZABIST, Karachi",
+    year: "Completed (2002)",
+    details: "Focus on management, leadership, and corporate sustainability."
+
     }
   ];
 
