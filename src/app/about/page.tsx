@@ -127,13 +127,13 @@ const experience = [
               className="flex justify-center lg:justify-end"
               variants={fadeInRight}
             >
-              <div className="relative w-64 h-64 bg-gray-200 rounded-full flex items-center justify-center border-4 border-[#89d6fb] overflow-hidden">
+              <div className="relative bg-gray-200 rounded-full flex items-center justify-center border-4 border-[#89d6fb] overflow-hidden">
                 <Image
                   src="/masood_ahmed2.PNG"
                   alt="Profile Photo"
-                  fill
-                  className="object-cover"
-                  priority
+                   width={450} 
+                height={450} 
+                  className="w-72 h-72 bg-gray-200 rounded-full object-cover"
                 />
                 
               </div>

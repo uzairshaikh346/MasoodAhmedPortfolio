@@ -134,10 +134,9 @@ const HomePage = () => {
               <Image 
                 src="/masood_ahmed.PNG" 
                 alt="Profile Photo" 
-                layout="responsive" 
-                width={320} 
-                height={320} 
-                className="w-80 h-80 bg-gray-200 rounded-full object-cover"
+                width={250} 
+                height={250} 
+                className="w-72 h-72 bg-gray-200 rounded-full object-cover"
               />
             </motion.div>
           </div>
