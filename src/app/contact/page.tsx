@@ -73,16 +73,16 @@ const contactDetails = [
   {
     icon: <Mail className="w-6 h-6" />,
     label: "Email",
-    value: "masood.ahmed@szabist.edu.pk",
+    value: "masdmasd@gmail.com",
     type: "email",
-    link: "mailto:masood.ahmed@szabist.edu.pk"
+    link: "mailto:masdmasd@gmail.com"
   },
   {
     icon: <Phone className="w-6 h-6" />,
     label: "Phone",
-    value: "+92 21 111 111 111",
+    value: "+92 341 1245596",
     type: "phone",
-    link: "tel:+922111111111"
+    link: "tel:+923411245596"
   },
   {
     icon: <Linkedin className="w-6 h-6" />,
